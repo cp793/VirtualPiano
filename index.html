@@ -5,57 +5,70 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Virtual Piano</title>
   <style>
+    :root {
+      --white-key-color: rgba(255, 255, 255, 0.85);
+      --black-key-color: black;
+      --active-color: #ffffffd1;
+      --white-key-text: #000;
+      --black-key-text: #fff;
+      --key-border-radius: 15px;
+    }
+
     body {
-      background:linear-gradient(to right,rgb(255, 255, 255),rgb(0, 0, 0) 50%);
+      background: linear-gradient(to right, white, black 50%);
       color: white;
       font-family: sans-serif;
       display: flex;
       flex-direction: column;
       align-items: center;
       padding: 20px;
+      min-height: 100vh;
+      margin: 0;
     }
 
     h1 {
-      margin-bottom: 20px;
+      margin-bottom: 40px;
     }
 
     .piano {
       display: flex;
       position: relative;
-      top:15dvh;
+      top: 15vh;
     }
 
     .key {
       width: 60px;
       height: 200px;
       border: 1px solid #333;
-      background: rgba(255, 255, 255, 0.4);
+      background: var(--white-key-color);
       margin-right: 2px;
       text-align: center;
-      line-height: 80px;
-      color: rgb(0, 0, 0);
+      line-height: 180px;
+      color: var(--white-key-text);
       font-weight: bold;
       user-select: none;
-     border-bottom-left-radius: 15px;
-     border-bottom-right-radius: 15px;
+      border-bottom-left-radius: var(--key-border-radius);
+      border-bottom-right-radius: var(--key-border-radius);
       position: relative;
       z-index: 1;
+      cursor: pointer;
     }
 
     .key.black {
       width: 40px;
       height: 120px;
-      background: black;
-      color: white;
+      background: var(--black-key-color);
+      color: var(--black-key-text);
       position: absolute;
       top: 0;
       z-index: 2;
-      line-height: 100px;
+      line-height: 110px;
+      border-radius: 5px;
     }
 
     .key.active {
-      background-color: #ffffffd1 !important;
-      color: rgb(0, 0, 0);
+      background-color: var(--active-color) !important;
+      color: var(--white-key-text);
     }
 
     .black.Csharp { left: 45px; }
@@ -99,8 +112,7 @@
       'J': 'B'
     };
 
-    document.addEventListener('keydown', (e) => {
-      const key = e.key.toUpperCase();
+    function playNote(key) {
       const note = keyMap[key];
       if (!note) return;
 
@@ -112,6 +124,18 @@
         pianoKey.classList.add('active');
         setTimeout(() => pianoKey.classList.remove('active'), 200);
       }
+    }
+
+    document.addEventListener('keydown', (e) => {
+      const key = e.key.toUpperCase();
+      playNote(key);
+    });
+
+    document.querySelectorAll('.key').forEach(keyEl => {
+      keyEl.addEventListener('click', () => {
+        const key = keyEl.getAttribute('data-key');
+        playNote(key);
+      });
     });
   </script>
 </body>
