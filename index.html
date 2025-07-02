@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Virtual Piano</title>
+  <style>
+    :root {
+      --white-key-color: rgba(255, 255, 255, 0.85);
+      --black-key-color: black;
+      --active-color: #ffffffd1;
+      --white-key-text: #000;
+      --black-key-text: #fff;
+      --key-border-radius: 15px;
+    }
+
+    body {
+      background: linear-gradient(to right, white, black 50%);
+      color: white;
+      font-family: sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
+      min-height: 100vh;
+      margin: 0;
+    }
+
+    h1 {
+      margin-bottom: 40px;
+    }
+
+    .piano {
+      display: flex;
+      position: relative;
+      top: 15vh;
+    }
+
+    .key {
+      width: 60px;
+      height: 200px;
+      border: 1px solid #333;
+      background: var(--white-key-color);
+      margin-right: 2px;
+      text-align: center;
+      line-height: 180px;
+      color: var(--white-key-text);
+      font-weight: bold;
+      user-select: none;
+      border-bottom-left-radius: var(--key-border-radius);
+      border-bottom-right-radius: var(--key-border-radius);
+      position: relative;
+      z-index: 1;
+      cursor: pointer;
+    }
+
+    .key.black {
+      width: 40px;
+      height: 120px;
+      background: var(--black-key-color);
+      color: var(--black-key-text);
+      position: absolute;
+      top: 0;
+      z-index: 2;
+      line-height: 110px;
+      border-radius: 5px;
+    }
+
+    .key.active {
+      background-color: var(--active-color) !important;
+      color: var(--white-key-text);
+    }
+
+    .black.Csharp { left: 45px; }
+    .black.Dsharp { left: 107px; }
+    .black.Fsharp { left: 229px; }
+    .black.Gsharp { left: 291px; }
+    .black.Asharp { left: 353px; }
+  </style>
+</head>
+<body>
+  <h1>Virtual Piano</h1>
+  <div class="piano">
+    <div class="key white" data-key="A">A</div>
+    <div class="key white" data-key="S">S</div>
+    <div class="key white" data-key="D">D</div>
+    <div class="key white" data-key="F">F</div>
+    <div class="key white" data-key="G">G</div>
+    <div class="key white" data-key="H">H</div>
+    <div class="key white" data-key="J">J</div>
+
+    <div class="key black Csharp" data-key="W">W</div>
+    <div class="key black Dsharp" data-key="E">E</div>
+    <div class="key black Fsharp" data-key="T">T</div>
+    <div class="key black Gsharp" data-key="Y">Y</div>
+    <div class="key black Asharp" data-key="U">U</div>
+  </div>
+
+  <script>
+    const keyMap = {
+      'A': 'C',
+      'W': 'Csharp',
+      'S': 'D',
+      'E': 'Dsharp',
+      'D': 'E',
+      'F': 'F',
+      'T': 'Fsharp',
+      'G': 'G',
+      'Y': 'Gsharp',
+      'H': 'A',
+      'U': 'Asharp',
+      'J': 'B'
+    };
+
+    function playNote(key) {
+      const note = keyMap[key];
+      if (!note) return;
+
+      const audio = new Audio(`sounds/${note}.mp3`);
+      audio.play();
+
+      const pianoKey = document.querySelector(`.key[data-key="${key}"]`);
+      if (pianoKey) {
+        pianoKey.classList.add('active');
+        setTimeout(() => pianoKey.classList.remove('active'), 200);
+      }
+    }
+
+    document.addEventListener('keydown', (e) => {
+      const key = e.key.toUpperCase();
+      playNote(key);
+    });
+
+    document.querySelectorAll('.key').forEach(keyEl => {
+      keyEl.addEventListener('click', () => {
+        const key = keyEl.getAttribute('data-key');
+        playNote(key);
+      });
+    });
+  </script>
+</body>
+</html>
